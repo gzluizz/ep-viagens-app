@@ -11,6 +11,23 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+
+# Load environment variables from a local `.env` file in development if present.
+# This makes it convenient to keep secrets in `backend/.env` (which should be
+# gitignored) without having to `source` manually. Uses python-dotenv if
+# available; if not present, the code silently continues (you can still set
+# variables in the environment).
+try:
+    from dotenv import load_dotenv
+    # `.env` is expected to live at the `backend/.env` path (one level above
+    # the Django project directory). BASE_DIR points to backend/ep_viagens_app,
+    # so go up one directory.
+    load_dotenv(os.path.join(Path(__file__).resolve().parent.parent, '.env'))
+except Exception:
+    # If python-dotenv isn't installed (e.g., production) just continue — the
+    # environment variables may be provided by the environment/host.
+    pass
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +37,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-v_+x+ls(7z812cb67tu2lz%)h9#)+0p_ho1hbeoi(1^%0nz7m='
+# Read SECRET_KEY from environment for safety. The hard-coded value below is kept
+# only as a fallback for development convenience; set the DJANGO_SECRET_KEY
+# environment variable in production or in a local `.env` file (not checked in).
+# Support projects that keep a `.env` file which exports either
+# `DJANGO_SECRET_KEY` (preferred) or the older `SECRET_KEY` variable.
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    os.environ.get('SECRET_KEY', 'django-insecure-v_+x+ls(7z812cb67tu2lz%)h9#)+0p_ho1hbeoi(1^%0nz7m=')
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -80,11 +105,15 @@ WSGI_APPLICATION = 'ep_viagens_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres.ccjekqprhfxlsagfxwag',
-        'PASSWORD': 'IyY4cNSqHrsBKXFe',
-        'HOST': 'aws-1-us-east-1.pooler.supabase.com',
-        'PORT': '6543',
+        # Prefer environment variables; fall back to the previous values to
+        # avoid breaking development flows. Replace these by setting the
+        # following environment variables: DB_NAME, DB_USER, DB_PASSWORD,
+        # DB_HOST, DB_PORT.
+        'NAME': os.environ.get('DB_NAME', 'postgres'),
+        'USER': os.environ.get('DB_USER', 'postgres.ccjekqprhfxlsagfxwag'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'IyY4cNSqHrsBKXFe'),
+        'HOST': os.environ.get('DB_HOST', 'aws-1-us-east-1.pooler.supabase.com'),
+        'PORT': os.environ.get('DB_PORT', '6543'),
     }
 }
 

@@ -18,7 +18,12 @@ O código backend agora está dentro da pasta `backend`.
 
 2. **Ative o ambiente virtual (raiz do workspace):**
    ```bash
-   ..\.venv\Scripts\Activate.ps1
+   # Linux / macOS (bash)
+   python3 -m venv .venv
+   source .venv/bin/activate
+
+   # Windows PowerShell
+   # ..\.venv\Scripts\Activate.ps1
    ```
 
 3. **Instale as dependências:**
@@ -27,6 +32,10 @@ O código backend agora está dentro da pasta `backend`.
    ```
 
 4. **Configure o arquivo `.env` com suas credenciais** (já está dentro de `backend`).
+
+   Observação: o projeto carrega automaticamente `backend/.env` em desenvolvimento
+   (via `python-dotenv`) — não é necessário `source .env`. Apenas mantenha o
+   arquivo `.env` em `backend/` e não o comite no repositório.
 
 5. **Rode as migrações:**
    ```bash
@@ -37,6 +46,18 @@ O código backend agora está dentro da pasta `backend`.
    ```bash
    python manage.py runserver
    ```
+
+### Exemplo rápido (Linux / macOS)
+
+```bash
+# a partir do diretório `backend`
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+# preencha backend/.env com suas credenciais
+python manage.py migrate
+python manage.py runserver
+```
 
 ## 📊 Modelos de Dados
 

@@ -1,0 +1,381 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-02-25T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023",
+  "resources": [
+    {
+      "_id": "wrk_ep_viagens",
+      "_type": "workspace",
+      "name": "EP Viagens API",
+      "description": "API para gestão de viagens",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_ep_viagens",
+      "_type": "environment",
+      "parentId": "wrk_ep_viagens",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://127.0.0.1:8000/api",
+        "token": ""
+      }
+    },
+
+    {
+      "_id": "fld_auth",
+      "_type": "request_group",
+      "parentId": "wrk_ep_viagens",
+      "name": "Autenticação"
+    },
+    {
+      "_id": "req_login",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Login",
+      "method": "POST",
+      "url": "{{ base_url }}/auth/login/",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ]
+    },
+    {
+      "_id": "req_logout",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Logout",
+      "method": "POST",
+      "url": "{{ base_url }}/auth/logout/",
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" }
+      ]
+    },
+
+    {
+      "_id": "fld_destinos",
+      "_type": "request_group",
+      "parentId": "wrk_ep_viagens",
+      "name": "Destinos"
+    },
+    {
+      "_id": "req_list_destinos",
+      "_type": "request",
+      "parentId": "fld_destinos",
+      "name": "Listar Destinos",
+      "method": "GET",
+      "url": "{{ base_url }}/destinos/",
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" }
+      ]
+    },
+    {
+      "_id": "req_create_destino",
+      "_type": "request",
+      "parentId": "fld_destinos",
+      "name": "Criar Destino",
+      "method": "POST",
+      "url": "{{ base_url }}/destinos/",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"cidade\": \"Rio de Janeiro\",\n  \"estado\": \"RJ\",\n  \"pais\": \"Brasil\"\n}"
+      },
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ]
+    },
+    {
+      "_id": "req_update_destino",
+      "_type": "request",
+      "parentId": "fld_destinos",
+      "name": "Atualizar Destino",
+      "method": "PUT",
+      "url": "{{ base_url }}/destinos/{id}/",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"cidade\": \"Rio de Janeiro\",\n  \"estado\": \"RJ\",\n  \"pais\": \"Brasil\"\n}"
+      },
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ]
+    },
+    {
+      "_id": "req_delete_destino",
+      "_type": "request",
+      "parentId": "fld_destinos",
+      "name": "Deletar Destino",
+      "method": "DELETE",
+      "url": "{{ base_url }}/destinos/{id}/",
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" }
+      ]
+    },
+
+    {
+      "_id": "fld_hospedagens",
+      "_type": "request_group",
+      "parentId": "wrk_ep_viagens",
+      "name": "Hospedagens"
+    },
+    {
+      "_id": "req_list_hospedagens",
+      "_type": "request",
+      "parentId": "fld_hospedagens",
+      "name": "Listar Hospedagens",
+      "method": "GET",
+      "url": "{{ base_url }}/hospedagens/"
+    },
+    {
+      "_id": "req_create_hospedagem",
+      "_type": "request",
+      "parentId": "fld_hospedagens",
+      "name": "Criar Hospedagem",
+      "method": "POST",
+      "url": "{{ base_url }}/hospedagens/",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"Hotel Copacabana Palace\",\n  \"endereco\": \"Avenida Atlântica, 1702\",\n  \"cidade\": \"Rio de Janeiro\",\n  \"estado\": \"RJ\",\n  \"pais\": \"Brasil\",\n  \"telefone\": \"(21) 2548-7070\",\n  \"email\": \"reservas@copacabanapalace.com.br\"\n}"
+      },
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ]
+    },
+    {
+      "_id": "req_update_hospedagem",
+      "_type": "request",
+      "parentId": "fld_hospedagens",
+      "name": "Atualizar Hospedagem",
+      "method": "PUT",
+      "url": "{{ base_url }}/hospedagens/{id}/"
+    },
+    {
+      "_id": "req_delete_hospedagem",
+      "_type": "request",
+      "parentId": "fld_hospedagens",
+      "name": "Deletar Hospedagem",
+      "method": "DELETE",
+      "url": "{{ base_url }}/hospedagens/{id}/",
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" }
+      ]
+    },
+
+    {
+      "_id": "fld_transportes",
+      "_type": "request_group",
+      "parentId": "wrk_ep_viagens",
+      "name": "Transportes"
+    },
+    {
+      "_id": "req_list_transportes",
+      "_type": "request",
+      "parentId": "fld_transportes",
+      "name": "Listar Transportes",
+      "method": "GET",
+      "url": "{{ base_url }}/transportes/"
+    },
+    {
+      "_id": "req_create_transporte",
+      "_type": "request",
+      "parentId": "fld_transportes",
+      "name": "Criar Transporte",
+      "method": "POST",
+      "url": "{{ base_url }}/transportes/",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"tipo\": \"Avião\",\n  \"empresa\": \"TAP Air Portugal\",\n  \"descricao\": \"Voo direto Lisboa-Rio\"\n}"
+      },
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ]
+    },
+    {
+      "_id": "req_update_transporte",
+      "_type": "request",
+      "parentId": "fld_transportes",
+      "name": "Atualizar Transporte",
+      "method": "PUT",
+      "url": "{{ base_url }}/transportes/{id}/"
+    },
+    {
+      "_id": "req_delete_transporte",
+      "_type": "request",
+      "parentId": "fld_transportes",
+      "name": "Deletar Transporte",
+      "method": "DELETE",
+      "url": "{{ base_url }}/transportes/{id}/",
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" }
+      ]
+    },
+
+    {
+      "_id": "fld_viajantes",
+      "_type": "request_group",
+      "parentId": "wrk_ep_viagens",
+      "name": "Viajantes"
+    },
+    {
+      "_id": "req_list_viajantes",
+      "_type": "request",
+      "parentId": "fld_viajantes",
+      "name": "Listar Viajantes",
+      "method": "GET",
+      "url": "{{ base_url }}/viajantes/"
+    },
+    {
+      "_id": "req_create_viajante",
+      "_type": "request",
+      "parentId": "fld_viajantes",
+      "name": "Criar Viajante",
+      "method": "POST",
+      "url": "{{ base_url }}/viajantes/",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome_completo\": \"João Silva Santos\",\n  \"cpf\": \"123.456.789-10\",\n  \"data_nascimento\": \"1990-05-15\",\n  \"celular\": \"(11) 98765-4321\",\n  \"email\": \"joao@email.com\",\n  \"contato_emergencia_nome\": \"Maria Silva\",\n  \"contato_emergencia_telefone\": \"(11) 99999-8888\",\n  \"observacoes_medicas\": \"Alérgico a frutos do mar\"\n}"
+      },
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ]
+    },
+    {
+      "_id": "req_update_viajante",
+      "_type": "request",
+      "parentId": "fld_viajantes",
+      "name": "Atualizar Viajante",
+      "method": "PUT",
+      "url": "{{ base_url }}/viajantes/{id}/"
+    },
+    {
+      "_id": "req_delete_viajante",
+      "_type": "request",
+      "parentId": "fld_viajantes",
+      "name": "Deletar Viajante",
+      "method": "DELETE",
+      "url": "{{ base_url }}/viajantes/{id}/",
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" }
+      ]
+    },
+
+    {
+      "_id": "fld_viagens",
+      "_type": "request_group",
+      "parentId": "wrk_ep_viagens",
+      "name": "Viagens"
+    },
+    {
+      "_id": "req_list_viagens",
+      "_type": "request",
+      "parentId": "fld_viagens",
+      "name": "Listar Viagens",
+      "method": "GET",
+      "url": "{{ base_url }}/viagens/"
+    },
+    {
+      "_id": "req_create_viagem",
+      "_type": "request",
+      "parentId": "fld_viagens",
+      "name": "Criar Viagem",
+      "method": "POST",
+      "url": "{{ base_url }}/viagens/",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"titulo\": \"Viagem Rio de Janeiro - Carnaval 2026\",\n  \"destino_id\": 1,\n  \"hospedagem_id\": 1,\n  \"transporte_id\": 1,\n  \"data_inicio\": \"2026-02-27\",\n  \"data_fim\": \"2026-03-07\",\n  \"status\": \"planejada\",\n  \"observacoes\": \"Pacote com entrada no desfile\"\n}"
+      },
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ]
+    },
+    {
+      "_id": "req_update_viagem",
+      "_type": "request",
+      "parentId": "fld_viagens",
+      "name": "Atualizar Viagem",
+      "method": "PUT",
+      "url": "{{ base_url }}/viagens/{id}/"
+    },
+    {
+      "_id": "req_delete_viagem",
+      "_type": "request",
+      "parentId": "fld_viagens",
+      "name": "Deletar Viagem",
+      "method": "DELETE",
+      "url": "{{ base_url }}/viagens/{id}/",
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" }
+      ]
+    },
+    {
+      "_id": "req_add_viajante_viagem",
+      "_type": "request",
+      "parentId": "fld_viagens",
+      "name": "Adicionar Viajante à Viagem",
+      "method": "POST",
+      "url": "{{ base_url }}/viagens/{id}/adicionar_viajante/",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"viajante_id\": 1,\n  \"status_pagamento\": \"pendente\",\n  \"valor_total\": 5000.00\n}"
+      }
+    },
+    {
+      "_id": "req_list_viajantes_viagem",
+      "_type": "request",
+      "parentId": "fld_viagens",
+      "name": "Listar Viajantes de uma Viagem",
+      "method": "GET",
+      "url": "{{ base_url }}/viagens/{id}/viajantes/"
+    },
+
+    {
+      "_id": "fld_viagem_viajantes",
+      "_type": "request_group",
+      "parentId": "wrk_ep_viagens",
+      "name": "Viagem-Viajante"
+    },
+    {
+      "_id": "req_list_viagem_viajantes",
+      "_type": "request",
+      "parentId": "fld_viagem_viajantes",
+      "name": "Listar Registros",
+      "method": "GET",
+      "url": "{{ base_url }}/viagem-viajantes/"
+    },
+    {
+      "_id": "req_update_viagem_viajante",
+      "_type": "request",
+      "parentId": "fld_viagem_viajantes",
+      "name": "Atualizar Pagamento",
+      "method": "PUT",
+      "url": "{{ base_url }}/viagem-viajantes/{id}/",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"status_pagamento\": \"pago\",\n  \"valor_pago\": 5000.00\n}"
+      },
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" },
+        { "name": "Content-Type", "value": "application/json" }
+      ]
+    },
+    {
+      "_id": "req_delete_viagem_viajante",
+      "_type": "request",
+      "parentId": "fld_viagem_viajantes",
+      "name": "Deletar Registro Viagem-Viajante",
+      "method": "DELETE",
+      "url": "{{ base_url }}/viagem-viajantes/{id}/",
+      "headers": [
+        { "name": "Authorization", "value": "Token {{ token }}" }
+      ]
+    }
+  ]
+}

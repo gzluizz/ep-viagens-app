@@ -6,6 +6,7 @@ function Sidebar() {
       <h2>EP Viagens</h2>
       <nav>
         <ul style={{ listStyle: "none", padding: 0 }}>
+          <li><Link to="/">Dashboard</Link></li>
           <li><Link to="/destinos">Destinos</Link></li>
           <li><Link to="/viagens">Viagens</Link></li>
           <li><Link to="/viajantes">Viajantes</Link></li>

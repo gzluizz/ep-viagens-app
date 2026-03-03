@@ -18,14 +18,20 @@ class DestinoSerializer(serializers.ModelSerializer):
 
 
 class HospedagemSerializer(serializers.ModelSerializer):
+    destino = DestinoSerializer(read_only=True)
+    destino_id = serializers.PrimaryKeyRelatedField(
+        queryset=Destino.objects.all(),
+        write_only=True,
+        source='destino'
+    )
+
     class Meta:
         model = Hospedagem
         fields = (
-            'id', 'nome', 'endereco', 'cidade', 'estado', 'pais',
+            'id', 'nome', 'endereco', 'destino', 'destino_id',
             'telefone', 'email', 'created_at', 'updated_at'
         )
         read_only_fields = ('id', 'created_at', 'updated_at')
-
 
 class TransporteSerializer(serializers.ModelSerializer):
     class Meta:

@@ -93,7 +93,10 @@ class ViagemSerializer(serializers.ModelSerializer):
         model = Viagem
         fields = (
             'id', 'titulo', 'destino', 'destino_id', 'hospedagem', 'hospedagem_id',
-            'transporte', 'transporte_id', 'data_inicio', 'data_fim', 'status',
-            'observacoes', 'viajantes', 'created_by', 'created_at', 'updated_at'
+            'transporte', 'transporte_id', 
+            'data_inicio', 'data_fim', 'status',
+            'observacoes', 
+            'viajantes', 'vagas_disponiveis' 
+            'created_by', 'created_at', 'updated_at'
         )
         read_only_fields = ('id', 'created_by', 'created_at', 'updated_at')

@@ -132,6 +132,7 @@ class Viagem(models.Model):
     )
 
     observacoes = models.TextField(blank=True)
+    vagas_disponiveis = models.PositiveIntegerField(default=0)
 
     created_by = models.ForeignKey(
         User,

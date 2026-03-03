@@ -13,7 +13,7 @@ function Hospedagens() {
     endereco: "",
     telefone: "",
     email: "",
-    destino: "",
+    destino_id: "",
   });
 
   useEffect(() => {
@@ -44,8 +44,11 @@ function Hospedagens() {
     e.preventDefault();
 
     const payload = {
-      ...form,
-      destino: Number(form.destino),
+      nome: form.nome,
+      endereco: form.endereco,
+      telefone: form.telefone,
+      email: form.email,
+      destino_id: Number(form.destino_id),
     };
 
     if (editingId) {
@@ -61,14 +64,7 @@ function Hospedagens() {
     }
 
     setEditingId(null);
-    setForm({
-      nome: "",
-      endereco: "",
-      telefone: "",
-      email: "",
-      destino: "",
-    });
-
+    setForm({ nome: "", endereco: "", telefone: "", email: "", destino_id: "" });
     fetchHospedagens();
   }
 
@@ -78,7 +74,7 @@ function Hospedagens() {
       endereco: h.endereco,
       telefone: h.telefone,
       email: h.email,
-      destino: h.destino, // id do destino
+      destino_id: h.destino?.id || "", // pega o id do destino
     });
     setEditingId(h.id);
   }
@@ -92,7 +88,6 @@ function Hospedagens() {
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
-
       <div style={{ flex: 1, padding: 20 }}>
         <h2>Hospedagens</h2>
 
@@ -134,10 +129,9 @@ function Hospedagens() {
 
           <br /><br />
 
-          {/* SELECT DE DESTINO */}
           <select
-            name="destino"
-            value={form.destino}
+            name="destino_id"
+            value={form.destino_id}
             onChange={handleChange}
             required
           >
@@ -174,18 +168,15 @@ function Hospedagens() {
                 <tr key={h.id}>
                   <td>{h.nome}</td>
                   <td>
-                    {h.destino_detalhe
-                      ? `${h.destino_detalhe.cidade} - ${h.destino_detalhe.estado}`
-                      : h.destino}
+                    {h.destino
+                      ? `${h.destino.cidade} - ${h.destino.estado} - ${h.destino.pais}`
+                      : ""}
                   </td>
                   <td>{h.telefone}</td>
                   <td>{h.email}</td>
                   <td>
                     <button onClick={() => handleEdit(h)}>Editar</button>
-                    <button
-                      onClick={() => handleDelete(h.id)}
-                      style={{ marginLeft: 5 }}
-                    >
+                    <button onClick={() => handleDelete(h.id)} style={{ marginLeft: 5 }}>
                       Excluir
                     </button>
                   </td>

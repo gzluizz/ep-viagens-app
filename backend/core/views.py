@@ -125,8 +125,14 @@ class ViagemViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def adicionar_viajante(self, request, pk=None):
-        """Adiciona um viajante a uma viagem."""
         viagem = self.get_object()
+
+        if viagem.vagas_disponiveis <= 0:
+            return Response(
+                {'error': 'Não há vagas disponíveis para esta viagem'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         viajante_id = request.data.get('viajante_id')
         status_pagamento = request.data.get('status_pagamento', 'pendente')
         valor_total = request.data.get('valor_total')
@@ -134,10 +140,7 @@ class ViagemViewSet(viewsets.ModelViewSet):
         try:
             viajante = Viajante.objects.get(id=viajante_id)
         except Viajante.DoesNotExist:
-            return Response(
-                {'error': 'Viajante não encontrado'},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({'error': 'Viajante não encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
         viagem_viajante, created = ViagemViajante.objects.get_or_create(
             viagem=viagem,
@@ -149,15 +152,13 @@ class ViagemViewSet(viewsets.ModelViewSet):
         )
 
         if not created:
-            return Response(
-                {'error': 'Viajante já estava adicionado a esta viagem'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({'error': 'Viajante já estava adicionado a esta viagem'}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(
-            ViagemViajanteSerializer(viagem_viajante).data,
-            status=status.HTTP_201_CREATED
-        )
+        # ⚡ Atualiza vagas
+        viagem.vagas_disponiveis -= 1
+        viagem.save()
+
+        return Response(ViagemViajanteSerializer(viagem_viajante).data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['get'])
     def viajantes(self, request, pk=None):

@@ -69,12 +69,6 @@ class ViagemViajanteSerializer(serializers.ModelSerializer):
 
 
 class ViagemSerializer(serializers.ModelSerializer):
-    destino = DestinoSerializer(read_only=True)
-    destino_id = serializers.PrimaryKeyRelatedField(
-        queryset=Destino.objects.all(),
-        write_only=True,
-        source='destino'
-    )
     hospedagem = HospedagemSerializer(read_only=True)
     hospedagem_id = serializers.PrimaryKeyRelatedField(
         queryset=Hospedagem.objects.all(),
@@ -88,15 +82,27 @@ class ViagemSerializer(serializers.ModelSerializer):
         source='transporte'
     )
     viajantes = ViajanteSerializer(many=True, read_only=True)
+    destino = DestinoSerializer(read_only=True)  # será preenchido pelo backend
 
     class Meta:
         model = Viagem
         fields = (
-            'id', 'titulo', 'destino', 'destino_id', 'hospedagem', 'hospedagem_id',
+            'id', 'titulo', 'destino', 'hospedagem', 'hospedagem_id',
             'transporte', 'transporte_id', 
             'data_inicio', 'data_fim', 'status',
             'observacoes', 
-            'viajantes', 'vagas_disponiveis' 
+            'viajantes', 'vagas_disponiveis', 
             'created_by', 'created_at', 'updated_at'
         )
-        read_only_fields = ('id', 'created_by', 'created_at', 'updated_at')
+        read_only_fields = ('id', 'destino', 'created_by', 'created_at', 'updated_at')
+
+    def create(self, validated_data):
+        # atribui destino baseado na hospedagem
+        hospedagem = validated_data['hospedagem']
+        validated_data['destino'] = hospedagem.destino
+        return super().create(validated_data)
+
+    def validate(self, data):
+        if data['data_inicio'] > data['data_fim']:
+            raise serializers.ValidationError("A data de início não pode ser depois da data de fim.")
+        return data

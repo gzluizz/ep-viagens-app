@@ -50,19 +50,38 @@ function Viagens() {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    // Validação de datas antes de enviar
+    if (new Date(form.data_inicio) > new Date(form.data_fim)) {
+      alert("A data de início não pode ser depois da data de fim.");
+      return;
+    }
+
+    // Prepara payload
+    const payload = {
+      titulo: form.titulo,
+      hospedagem_id: Number(form.hospedagem_id),
+      transporte_id: Number(form.transporte_id),
+      data_inicio: form.data_inicio,
+      data_fim: form.data_fim,
+      status: form.status,
+      observacoes: form.observacoes,
+      vagas_disponiveis: Number(form.vagas_disponiveis),
+    };
+
     try {
       if (editingId) {
         await apiFetch(`/viagens/${editingId}/`, {
           method: "PUT",
-          body: JSON.stringify(form),
+          body: JSON.stringify(payload),
         });
       } else {
         await apiFetch("/viagens/", {
           method: "POST",
-          body: JSON.stringify(form),
+          body: JSON.stringify(payload),
         });
       }
 
+      // Reset form
       setEditingId(null);
       setForm({
         titulo: "",
@@ -72,11 +91,13 @@ function Viagens() {
         data_fim: "",
         status: "planejada",
         observacoes: "",
+        vagas_disponiveis: "",
       });
 
-      fetchAll();
+      fetchAll(); // Recarrega a lista de viagens
     } catch (error) {
       console.error(error);
+      alert("Ocorreu um erro ao salvar a viagem. Verifique os dados.");
     }
   }
 
@@ -179,6 +200,16 @@ function Viagens() {
             <option value="finalizada">Finalizada</option>
           </select>
 
+          <input
+            type="number"
+            name="vagas_disponiveis"
+            placeholder="Vagas disponíveis"
+            value={form.vagas_disponiveis || ""}
+            onChange={handleChange}
+            style={{ marginLeft: 10 }}
+            required
+          />
+
           <br /><br />
 
           <textarea
@@ -210,6 +241,7 @@ function Viagens() {
                 <th>Transporte</th>
                 <th>Status</th>
                 <th>Período</th>
+                <th>Vagas Disponiveis</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -222,6 +254,7 @@ function Viagens() {
                   <td>{v.transporte?.tipo} - {v.transporte?.empresa}</td>
                   <td>{v.status}</td>
                   <td>{v.data_inicio} → {v.data_fim}</td>
+                  <td>{v.vagas_disponiveis}</td>
                   <td>
                     <button onClick={() => handleEdit(v)}>Editar</button>
                     <button

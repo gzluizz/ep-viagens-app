@@ -12,11 +12,12 @@ export function AuthProvider({ children }) {
     }
   });
 
+  const token = localStorage.getItem("token"); // <-- adiciona isso
+
   function login(data) {
     if (data?.token) {
       localStorage.setItem("token", data.token);
     }
-
     if (data?.user) {
       localStorage.setItem("user", JSON.stringify(data.user));
       setUser(data.user);
@@ -25,20 +26,18 @@ export function AuthProvider({ children }) {
 
   async function logout() {
     try {
-      await apiFetch("/auth/logout/", {
-        method: "POST",
-      });
-    } catch {
-      // Mesmo se der erro no backend, limpa localmente
+      await apiFetch("/auth/logout/", { method: "POST" });
+    } catch (e) {
+      // ignorando o erro de logout, mas variável usada
+      console.error("Erro ao fazer logout:", e);
     }
-
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, token }}>
       {children}
     </AuthContext.Provider>
   );

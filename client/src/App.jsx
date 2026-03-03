@@ -1,16 +1,24 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from "./auth/AuthProvider";
-import App from "./App";
-import "./index.css";
+import { Routes, Route } from "react-router-dom";
+import { ProtectedRoute } from "./auth/ProtectedRoute";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </BrowserRouter>
-  </React.StrictMode>
-);
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard"; // 🔥 DESCOMENTA
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
+}
+
+export default App;

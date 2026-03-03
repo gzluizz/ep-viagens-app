@@ -1,13 +1,11 @@
-// redircionamento para login, metodo protected
-
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 
 export function ProtectedRoute({ children }) {
-  const { user } = useAuth();
+  const { token } = useAuth();
 
-  if (!user) {
-    return <Navigate to="/login" />;
+  if (!token) {
+    return <Navigate to="/login" replace />;
   }
 
   return children;

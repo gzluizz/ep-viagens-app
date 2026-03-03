@@ -1,3 +1,5 @@
+// redircionamento para login, metodo protected
+
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 

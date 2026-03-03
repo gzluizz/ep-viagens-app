@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
   function login(data) {
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
-    setUser(data.user);
+    setUser(data.user)
   }
 
   function logout() {

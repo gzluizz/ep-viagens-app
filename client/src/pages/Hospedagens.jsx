@@ -64,7 +64,14 @@ function Hospedagens() {
     }
 
     setEditingId(null);
-    setForm({ nome: "", endereco: "", telefone: "", email: "", destino_id: "" });
+    setForm({
+      nome: "",
+      endereco: "",
+      telefone: "",
+      email: "",
+      destino_id: "",
+    });
+
     fetchHospedagens();
   }
 
@@ -74,13 +81,14 @@ function Hospedagens() {
       endereco: h.endereco,
       telefone: h.telefone,
       email: h.email,
-      destino_id: h.destino?.id || "", // pega o id do destino
+      destino_id: h.destino?.id || "",
     });
     setEditingId(h.id);
   }
 
   async function handleDelete(id) {
     if (!window.confirm("Deseja excluir esta hospedagem?")) return;
+
     await apiFetch(`/hospedagens/${id}/`, { method: "DELETE" });
     fetchHospedagens();
   }
@@ -88,10 +96,10 @@ function Hospedagens() {
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
-      <div style={{ flex: 1, padding: 20 }}>
+      <div>
         <h2>Hospedagens</h2>
 
-        <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
+        <form onSubmit={handleSubmit}>
           <input
             name="nome"
             placeholder="Nome"
@@ -105,7 +113,6 @@ function Hospedagens() {
             placeholder="Telefone"
             value={form.telefone}
             onChange={handleChange}
-            style={{ marginLeft: 10 }}
           />
 
           <input
@@ -113,10 +120,9 @@ function Hospedagens() {
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            style={{ marginLeft: 10 }}
           />
 
-          <br /><br />
+          <br />
 
           <input
             name="endereco"
@@ -124,10 +130,9 @@ function Hospedagens() {
             value={form.endereco}
             onChange={handleChange}
             required
-            style={{ width: "100%" }}
           />
 
-          <br /><br />
+          <br />
 
           <select
             name="destino_id"
@@ -143,7 +148,7 @@ function Hospedagens() {
             ))}
           </select>
 
-          <br /><br />
+          <br />
 
           <button type="submit">
             {editingId ? "Salvar Alterações" : "Criar Hospedagem"}
@@ -153,7 +158,7 @@ function Hospedagens() {
         {loading ? (
           <p>Carregando...</p>
         ) : (
-          <table border="1" cellPadding="5">
+          <table border="1">
             <thead>
               <tr>
                 <th>Nome</th>
@@ -176,7 +181,7 @@ function Hospedagens() {
                   <td>{h.email}</td>
                   <td>
                     <button onClick={() => handleEdit(h)}>Editar</button>
-                    <button onClick={() => handleDelete(h.id)} style={{ marginLeft: 5 }}>
+                    <button onClick={() => handleDelete(h.id)}>
                       Excluir
                     </button>
                   </td>

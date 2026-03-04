@@ -17,6 +17,7 @@ function Viagens() {
     data_fim: "",
     status: "planejada",
     observacoes: "",
+    vagas_disponiveis: "",
   });
 
   useEffect(() => {
@@ -50,13 +51,11 @@ function Viagens() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // Validação de datas antes de enviar
     if (new Date(form.data_inicio) > new Date(form.data_fim)) {
       alert("A data de início não pode ser depois da data de fim.");
       return;
     }
 
-    // Prepara payload
     const payload = {
       titulo: form.titulo,
       hospedagem_id: Number(form.hospedagem_id),
@@ -81,7 +80,6 @@ function Viagens() {
         });
       }
 
-      // Reset form
       setEditingId(null);
       setForm({
         titulo: "",
@@ -94,7 +92,7 @@ function Viagens() {
         vagas_disponiveis: "",
       });
 
-      fetchAll(); // Recarrega a lista de viagens
+      fetchAll();
     } catch (error) {
       console.error(error);
       alert("Ocorreu um erro ao salvar a viagem. Verifique os dados.");
@@ -110,6 +108,7 @@ function Viagens() {
       data_fim: viagem.data_fim,
       status: viagem.status,
       observacoes: viagem.observacoes || "",
+      vagas_disponiveis: viagem.vagas_disponiveis || "",
     });
     setEditingId(viagem.id);
   }
@@ -125,11 +124,10 @@ function Viagens() {
     <div style={{ display: "flex" }}>
       <Sidebar />
 
-      <div style={{ flex: 1, padding: 20 }}>
+      <div>
         <h2>Viagens</h2>
 
-        {/* FORM */}
-        <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
+        <form onSubmit={handleSubmit}>
           <input
             name="titulo"
             placeholder="Título"
@@ -138,7 +136,7 @@ function Viagens() {
             required
           />
 
-          <br /><br />
+          <br />
 
           <select
             name="hospedagem_id"
@@ -159,7 +157,6 @@ function Viagens() {
             value={form.transporte_id}
             onChange={handleChange}
             required
-            style={{ marginLeft: 10 }}
           >
             <option value="">Selecione o transporte</option>
             {transportes.map((t) => (
@@ -169,7 +166,7 @@ function Viagens() {
             ))}
           </select>
 
-          <br /><br />
+          <br />
 
           <input
             type="date"
@@ -185,14 +182,12 @@ function Viagens() {
             value={form.data_fim}
             onChange={handleChange}
             required
-            style={{ marginLeft: 10 }}
           />
 
           <select
             name="status"
             value={form.status}
             onChange={handleChange}
-            style={{ marginLeft: 10 }}
           >
             <option value="planejada">Planejada</option>
             <option value="confirmada">Confirmada</option>
@@ -204,13 +199,12 @@ function Viagens() {
             type="number"
             name="vagas_disponiveis"
             placeholder="Vagas disponíveis"
-            value={form.vagas_disponiveis || ""}
+            value={form.vagas_disponiveis}
             onChange={handleChange}
-            style={{ marginLeft: 10 }}
             required
           />
 
-          <br /><br />
+          <br />
 
           <textarea
             name="observacoes"
@@ -218,21 +212,19 @@ function Viagens() {
             value={form.observacoes}
             onChange={handleChange}
             rows="3"
-            style={{ width: "100%" }}
           />
 
-          <br /><br />
+          <br />
 
           <button type="submit">
             {editingId ? "Salvar Alterações" : "Criar Viagem"}
           </button>
         </form>
 
-        {/* LISTA */}
         {loading ? (
           <p>Carregando...</p>
         ) : (
-          <table border="1" cellPadding="5">
+          <table border="1">
             <thead>
               <tr>
                 <th>Título</th>
@@ -241,7 +233,7 @@ function Viagens() {
                 <th>Transporte</th>
                 <th>Status</th>
                 <th>Período</th>
-                <th>Vagas Disponiveis</th>
+                <th>Vagas Disponíveis</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -249,7 +241,9 @@ function Viagens() {
               {viagens.map((v) => (
                 <tr key={v.id}>
                   <td>{v.titulo}</td>
-                  <td>{v.hospedagem?.destino?.cidade} - {v.hospedagem?.destino?.estado}</td>
+                  <td>
+                    {v.hospedagem?.destino?.cidade} - {v.hospedagem?.destino?.estado}
+                  </td>
                   <td>{v.hospedagem?.nome}</td>
                   <td>{v.transporte?.tipo} - {v.transporte?.empresa}</td>
                   <td>{v.status}</td>
@@ -257,10 +251,7 @@ function Viagens() {
                   <td>{v.vagas_disponiveis}</td>
                   <td>
                     <button onClick={() => handleEdit(v)}>Editar</button>
-                    <button
-                      onClick={() => handleDelete(v.id)}
-                      style={{ marginLeft: 5 }}
-                    >
+                    <button onClick={() => handleDelete(v.id)}>
                       Excluir
                     </button>
                   </td>

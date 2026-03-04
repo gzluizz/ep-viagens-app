@@ -7,6 +7,9 @@ function Viajantes() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [selectedViajante, setSelectedViajante] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
+
   const [form, setForm] = useState({
     nome_completo: "",
     cpf: "",
@@ -73,39 +76,59 @@ function Viajantes() {
   }
 
   function handleEdit(v) {
-    setForm(v);
+    setForm({
+      nome_completo: v.nome_completo,
+      cpf: v.cpf,
+      data_nascimento: v.data_nascimento,
+      celular: v.celular,
+      email: v.email,
+      contato_emergencia_nome: v.contato_emergencia_nome,
+      contato_emergencia_telefone: v.contato_emergencia_telefone,
+      observacoes_medicas: v.observacoes_medicas,
+    });
     setEditingId(v.id);
   }
 
-  async function handleDelete(id) {
-    if (!window.confirm("Deseja excluir este viajante?")) return;
-    await apiFetch(`/viajantes/${id}/`, { method: "DELETE" });
-    fetchViajantes();
+  function handleDelete(id) {
+    setDeleteId(id);
+  }
+
+  async function confirmDelete() {
+    try {
+      await apiFetch(`/viajantes/${deleteId}/`, { method: "DELETE" });
+      setDeleteId(null);
+      fetchViajantes();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function handleView(id) {
+    try {
+      const data = await apiFetch(`/viajantes/${id}/`);
+      setSelectedViajante(data);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className="layout" style={{ display: "flex" }}>
       <Sidebar />
 
-      <div style={{ flex: 1, padding: 20 }}>
+      <div className="content">
         <h2>Viajantes</h2>
 
-        <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
+        <form onSubmit={handleSubmit} className="form-viajante">
           <input name="nome_completo" placeholder="Nome Completo" value={form.nome_completo} onChange={handleChange} required />
-          <input name="cpf" placeholder="CPF" value={form.cpf} onChange={handleChange} required style={{ marginLeft: 10 }} />
-          
-          <br /><br />
+          <input name="cpf" placeholder="CPF" value={form.cpf} onChange={handleChange} required />
 
           <input type="date" name="data_nascimento" value={form.data_nascimento} onChange={handleChange} required />
-          <input name="celular" placeholder="Celular" value={form.celular} onChange={handleChange} style={{ marginLeft: 10 }} />
-          <input name="email" placeholder="Email" value={form.email} onChange={handleChange} style={{ marginLeft: 10 }} />
-
-          <br /><br />
+          <input name="celular" placeholder="Celular" value={form.celular} onChange={handleChange} />
+          <input name="email" placeholder="Email" value={form.email} onChange={handleChange} />
 
           <input name="contato_emergencia_nome" placeholder="Contato Emergência" value={form.contato_emergencia_nome} onChange={handleChange} />
-          <input name="contato_emergencia_telefone" placeholder="Telefone Emergência" value={form.contato_emergencia_telefone} onChange={handleChange} style={{ marginLeft: 10 }} />
-
-          <br /><br />
+          <input name="contato_emergencia_telefone" placeholder="Telefone Emergência" value={form.contato_emergencia_telefone} onChange={handleChange} />
 
           <textarea
             name="observacoes_medicas"
@@ -113,10 +136,7 @@ function Viajantes() {
             value={form.observacoes_medicas}
             onChange={handleChange}
             rows="3"
-            style={{ width: "100%" }}
           />
-
-          <br /><br />
 
           <button type="submit">
             {editingId ? "Salvar Alterações" : "Criar Viajante"}
@@ -126,11 +146,13 @@ function Viajantes() {
         {loading ? (
           <p>Carregando...</p>
         ) : (
-          <table border="1" cellPadding="5">
+          <table>
             <thead>
               <tr>
                 <th>Nome</th>
                 <th>CPF</th>
+                <th>Data Nascimento</th>
+                <th>Contato</th>
                 <th>Email</th>
                 <th>Ações</th>
               </tr>
@@ -140,10 +162,13 @@ function Viajantes() {
                 <tr key={v.id}>
                   <td>{v.nome_completo}</td>
                   <td>{v.cpf}</td>
+                  <td>{v.data_nascimento}</td>
+                  <td>{v.celular}</td>
                   <td>{v.email}</td>
                   <td>
+                    <button onClick={() => handleView(v.id)}>Visualizar</button>
                     <button onClick={() => handleEdit(v)}>Editar</button>
-                    <button onClick={() => handleDelete(v.id)} style={{ marginLeft: 5 }}>
+                    <button onClick={() => handleDelete(v.id)}>
                       Excluir
                     </button>
                   </td>
@@ -151,6 +176,44 @@ function Viajantes() {
               ))}
             </tbody>
           </table>
+        )}
+
+        {/* Modal Visualização */}
+        {selectedViajante && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>Detalhes do Viajante</h3>
+              <p><strong>Nome:</strong> {selectedViajante.nome_completo}</p>
+              <p><strong>CPF:</strong> {selectedViajante.cpf}</p>
+              <p><strong>Nascimento:</strong> {selectedViajante.data_nascimento}</p>
+              <p><strong>Celular:</strong> {selectedViajante.celular}</p>
+              <p><strong>Email:</strong> {selectedViajante.email}</p>
+              <p><strong>Contato Emergência:</strong> {selectedViajante.contato_emergencia_nome} - {selectedViajante.contato_emergencia_telefone}</p>
+              <p><strong>Observações:</strong> {selectedViajante.observacoes_medicas || "Nenhuma"}</p>
+
+              <button onClick={() => setSelectedViajante(null)}>
+                Fechar
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Modal Confirmação Exclusão */}
+        {deleteId && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>Confirmar Exclusão</h3>
+              <p>Tem certeza que deseja excluir este viajante?</p>
+
+              <button onClick={confirmDelete}>
+                Sim, excluir
+              </button>
+
+              <button onClick={() => setDeleteId(null)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

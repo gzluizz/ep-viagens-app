@@ -7,7 +7,7 @@ function Transportes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [form, setForm] = useState({ tipo: "", empresa: "", descricao: "" });
+  const [form, setForm] = { tipo: "", empresa: "", descricao: "" };
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
@@ -72,6 +72,7 @@ function Transportes() {
 
   async function handleDelete(id) {
     if (!window.confirm("Tem certeza que deseja excluir este transporte?")) return;
+
     try {
       await apiFetch(`/transportes/${id}/`, { method: "DELETE" });
       fetchTransportes();
@@ -83,12 +84,12 @@ function Transportes() {
   return (
     <div style={{ display: "flex" }}>
       <Sidebar />
-      <div style={{ flex: 1, padding: 20 }}>
+      <div>
         <h2>Transportes</h2>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p>{error}</p>}
 
-        <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             name="tipo"
@@ -97,6 +98,7 @@ function Transportes() {
             onChange={handleChange}
             required
           />
+
           <input
             type="text"
             name="empresa"
@@ -104,18 +106,18 @@ function Transportes() {
             value={form.empresa}
             onChange={handleChange}
             required
-            style={{ marginLeft: 10 }}
           />
+
           <input
             type="text"
             name="descricao"
-            placeholder="descricao"
+            placeholder="Descrição"
             value={form.descricao}
             onChange={handleChange}
             required
-            style={{ marginLeft: 10 }}
           />
-          <button type="submit" style={{ marginLeft: 10 }}>
+
+          <button type="submit">
             {editingId ? "Salvar Alterações" : "Adicionar Transporte"}
           </button>
         </form>
@@ -123,7 +125,7 @@ function Transportes() {
         {loading ? (
           <p>Carregando transportes...</p>
         ) : (
-          <table border="1" cellPadding="5" cellSpacing="0">
+          <table border="1">
             <thead>
               <tr>
                 <th>Tipo</th>
@@ -140,7 +142,7 @@ function Transportes() {
                   <td>{t.descricao}</td>
                   <td>
                     <button onClick={() => handleEdit(t)}>Editar</button>
-                    <button onClick={() => handleDelete(t.id)} style={{ marginLeft: 5 }}>
+                    <button onClick={() => handleDelete(t.id)}>
                       Excluir
                     </button>
                   </td>

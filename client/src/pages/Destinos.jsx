@@ -7,35 +7,37 @@ function Destinos() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [form, setForm] = useState({ cidade: "", estado: "", pais: "" });
-  const [editingId, setEditingId] = useState(null);
+  const [form, setForm] = useState({
+    cidade: "",
+    estado: "",
+    pais: ""
+  });
 
-  // Carregar destinos
+  const [editingId, setEditingId] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
+
   useEffect(() => {
     fetchDestinos();
   }, []);
 
-async function fetchDestinos() {
-  try {
-    setLoading(true);
-    const data = await apiFetch("/destinos/");
-    
-    // Certifique-se que data é um array
-    if (Array.isArray(data)) {
-      setDestinos(data);
-    } else if (data.results) {
-      // Se DRF estiver usando PageNumberPagination
-      setDestinos(data.results);
-    } else {
-      setDestinos([]); // fallback
-    }
+  async function fetchDestinos() {
+    try {
+      setLoading(true);
+      const data = await apiFetch("/destinos/");
 
-  } catch {
-    setError("Erro ao carregar destinos");
-  } finally {
-    setLoading(false);
+      if (Array.isArray(data)) {
+        setDestinos(data);
+      } else if (data.results) {
+        setDestinos(data.results);
+      } else {
+        setDestinos([]);
+      }
+    } catch {
+      setError("Erro ao carregar destinos");
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -56,6 +58,7 @@ async function fetchDestinos() {
           body: JSON.stringify(form),
         });
       }
+
       setForm({ cidade: "", estado: "", pais: "" });
       setEditingId(null);
       fetchDestinos();
@@ -65,14 +68,22 @@ async function fetchDestinos() {
   }
 
   function handleEdit(destino) {
-    setForm({ cidade: destino.cidade, estado: destino.estado, pais: destino.pais });
+    setForm({
+      cidade: destino.cidade,
+      estado: destino.estado,
+      pais: destino.pais
+    });
     setEditingId(destino.id);
   }
 
-  async function handleDelete(id) {
-    if (!window.confirm("Tem certeza que deseja excluir este destino?")) return;
+  function handleDelete(id) {
+    setDeleteId(id);
+  }
+
+  async function confirmDelete() {
     try {
-      await apiFetch(`/destinos/${id}/`, { method: "DELETE" });
+      await apiFetch(`/destinos/${deleteId}/`, { method: "DELETE" });
+      setDeleteId(null);
       fetchDestinos();
     } catch {
       setError("Erro ao excluir destino");
@@ -80,14 +91,15 @@ async function fetchDestinos() {
   }
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className="layout" style={{ display: "flex" }}>
       <Sidebar />
-      <div style={{ flex: 1, padding: 20 }}>
+
+      <div className="content">
         <h2>Destinos</h2>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p className="error-message">{error}</p>}
 
-        <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
+        <form onSubmit={handleSubmit} className="form-destino">
           <input
             type="text"
             name="cidade"
@@ -96,6 +108,7 @@ async function fetchDestinos() {
             onChange={handleChange}
             required
           />
+
           <input
             type="text"
             name="estado"
@@ -103,8 +116,8 @@ async function fetchDestinos() {
             value={form.estado}
             onChange={handleChange}
             required
-            style={{ marginLeft: 10 }}
           />
+
           <input
             type="text"
             name="pais"
@@ -112,9 +125,9 @@ async function fetchDestinos() {
             value={form.pais}
             onChange={handleChange}
             required
-            style={{ marginLeft: 10 }}
           />
-          <button type="submit" style={{ marginLeft: 10 }}>
+
+          <button type="submit">
             {editingId ? "Salvar Alterações" : "Adicionar Destino"}
           </button>
         </form>
@@ -122,7 +135,7 @@ async function fetchDestinos() {
         {loading ? (
           <p>Carregando destinos...</p>
         ) : (
-          <table border="1" cellPadding="5" cellSpacing="0">
+          <table>
             <thead>
               <tr>
                 <th>Cidade</th>
@@ -139,7 +152,7 @@ async function fetchDestinos() {
                   <td>{d.pais}</td>
                   <td>
                     <button onClick={() => handleEdit(d)}>Editar</button>
-                    <button onClick={() => handleDelete(d.id)} style={{ marginLeft: 5 }}>
+                    <button onClick={() => handleDelete(d.id)}>
                       Excluir
                     </button>
                   </td>
@@ -147,6 +160,24 @@ async function fetchDestinos() {
               ))}
             </tbody>
           </table>
+        )}
+
+        {/* Modal Confirmação Exclusão */}
+        {deleteId && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>Confirmar Exclusão</h3>
+              <p>Tem certeza que deseja excluir este destino?</p>
+
+              <button onClick={confirmDelete}>
+                Sim, excluir
+              </button>
+
+              <button onClick={() => setDeleteId(null)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { apiFetch } from "../services/api";
 import Sidebar from "../components/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 function Viagens() {
   const [viagens, setViagens] = useState([]);
@@ -8,6 +9,7 @@ function Viagens() {
   const [transportes, setTransportes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState(null);
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     titulo: "",
@@ -122,7 +124,6 @@ function Viagens() {
 
   return (
     <div style={{ display: "flex" }}>
-      <Sidebar />
 
       <div>
         <h2>Viagens</h2>
@@ -251,9 +252,8 @@ function Viagens() {
                   <td>{v.vagas_disponiveis}</td>
                   <td>
                     <button onClick={() => handleEdit(v)}>Editar</button>
-                    <button onClick={() => handleDelete(v.id)}>
-                      Excluir
-                    </button>
+                    <button onClick={() => handleDelete(v.id)}>Excluir</button>
+                    <button onClick={() => navigate(`/viagens/${v.id}`)}>Detalhes</button>
                   </td>
                 </tr>
               ))}

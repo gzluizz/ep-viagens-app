@@ -114,7 +114,6 @@ function Viajantes() {
 
   return (
     <div className="layout" style={{ display: "flex" }}>
-      <Sidebar />
 
       <div className="content">
         <h2>Viajantes</h2>

@@ -95,7 +95,7 @@ function Hospedagens() {
 
   return (
     <div style={{ display: "flex" }}>
-      <Sidebar />
+      
       <div>
         <h2>Hospedagens</h2>
 

@@ -7,7 +7,12 @@ function Transportes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [form, setForm] = { tipo: "", empresa: "", descricao: "" };
+  const [form, setForm] = useState({
+    tipo: "",
+    empresa: "",
+    descricao: "",
+  });
+
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
@@ -83,7 +88,7 @@ function Transportes() {
 
   return (
     <div style={{ display: "flex" }}>
-      <Sidebar />
+      
       <div>
         <h2>Transportes</h2>
 

@@ -3,72 +3,40 @@ import { ProtectedRoute } from "./auth/ProtectedRoute";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import DashboardHome from "./pages/DashboardHome";
+
 import Destinos from "./pages/Destinos";
 import Transportes from "./pages/Transportes";
 import Viagens from "./pages/Viagens";
 import Viajantes from "./pages/Viajantes";
 import Hospedagens from "./pages/Hospedagens";
+import ViagemDetalhes from "./pages/ViagemDetalhes";
 
 function App() {
-    return (
-        <Routes>
-            <Route path="/login" element={<Login />} />
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
 
-            <Route
-                path="/"
-                element={
-                    <ProtectedRoute>
-                        <Dashboard />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      >
+        {/* HOME DO DASHBOARD */}
+        <Route index element={<DashboardHome />} />
 
-            <Route
-                path="/destinos"
-                element={
-                    <ProtectedRoute>
-                        <Destinos />
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route
-                path="/viagens"
-                element={
-                    <ProtectedRoute>
-                        <Viagens />
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route
-                path="/viajantes"
-                element={
-                    <ProtectedRoute>
-                        <Viajantes />
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route
-                path="/hospedagens"
-                element={
-                    <ProtectedRoute>
-                        <Hospedagens />
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route
-                path="/transportes"
-                element={
-                    <ProtectedRoute>
-                        <Transportes />
-                    </ProtectedRoute>
-                }
-            />
-        </Routes>
-    );
+        <Route path="destinos" element={<Destinos />} />
+        <Route path="viagens" element={<Viagens />} />
+        <Route path="viajantes" element={<Viajantes />} />
+        <Route path="hospedagens" element={<Hospedagens />} />
+        <Route path="transportes" element={<Transportes />} />
+        <Route path="viagens/:id" element={<ViagemDetalhes />} />
+      </Route>
+    </Routes>
+  );
 }
 
 export default App;

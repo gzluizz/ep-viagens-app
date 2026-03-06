@@ -92,7 +92,7 @@ function Destinos() {
 
   return (
     <div className="layout" style={{ display: "flex" }}>
-      <Sidebar />
+      
 
       <div className="content">
         <h2>Destinos</h2>
